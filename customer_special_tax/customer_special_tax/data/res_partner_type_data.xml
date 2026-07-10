@@ -1,8 +1,0 @@
-<odoo>
-    <record id="partner_type_customer" model="res.partner.type">
-        <field name="name">Client</field>
-    </record>
-    <record id="partner_type_vendor" model="res.partner.type">
-        <field name="name">Fournisseur</field>
-    </record>
-</odoo>

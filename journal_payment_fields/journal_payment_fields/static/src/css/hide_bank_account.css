@@ -1,7 +1,0 @@
-/* Force-hide Company Bank Account field and its label */
-label.o_form_label[for="partner_bank_id"],
-.o_field_widget[name="partner_bank_id"],
-div.o_cell:has(> label[for="partner_bank_id"]),
-div.o_cell:has(> .o_field_widget[name="partner_bank_id"]) {
-    display: none !important;
-}
