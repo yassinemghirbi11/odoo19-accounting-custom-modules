@@ -1,0 +1,17 @@
+<odoo>
+    <record id="view_partner_form_special_tax" model="ir.ui.view">
+        <field name="name">res.partner.form.special.tax</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']" position="inside">
+                <group string="Tax Settings">
+                    <field name="special_tax"/>
+                </group>
+            </xpath>
+            <field name="vat" position="before">
+                <field name="partner_type" widget="radio"/>
+            </field>
+        </field>
+    </record>
+</odoo>

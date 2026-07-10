@@ -1,0 +1,39 @@
+<odoo>
+    <record id="view_res_partner_type_list" model="ir.ui.view">
+        <field name="name">res.partner.type.list</field>
+        <field name="model">res.partner.type</field>
+        <field name="arch" type="xml">
+            <list string="Partner Types">
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_res_partner_type_form" model="ir.ui.view">
+        <field name="name">res.partner.type.form</field>
+        <field name="model">res.partner.type</field>
+        <field name="arch" type="xml">
+            <form string="Partner Type">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_res_partner_type" model="ir.actions.act_window">
+        <field name="name">Partner Types</field>
+        <field name="res_model">res.partner.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_res_partner_type"
+        name="Partner Types"
+        parent="base.menu_custom"
+        action="action_res_partner_type"
+        sequence="50"/>
+</odoo>

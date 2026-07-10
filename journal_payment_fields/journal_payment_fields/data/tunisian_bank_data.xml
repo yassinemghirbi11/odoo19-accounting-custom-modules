@@ -1,0 +1,42 @@
+<odoo>
+    <record id="bank_atb" model="tunisian.bank">
+        <field name="name">ATB - Arab Tunisian Bank</field>
+        <field name="code">ATB</field>
+    </record>
+    <record id="bank_bt" model="tunisian.bank">
+        <field name="name">BT - Banque de Tunisie</field>
+        <field name="code">BT</field>
+    </record>
+    <record id="bank_biat" model="tunisian.bank">
+        <field name="name">BIAT - Banque Internationale Arabe de Tunisie</field>
+        <field name="code">BIAT</field>
+    </record>
+    <record id="bank_stb" model="tunisian.bank">
+        <field name="name">STB - Societe Tunisienne de Banque</field>
+        <field name="code">STB</field>
+    </record>
+    <record id="bank_bna" model="tunisian.bank">
+        <field name="name">BNA - Banque Nationale Agricole</field>
+        <field name="code">BNA</field>
+    </record>
+    <record id="bank_ubci" model="tunisian.bank">
+        <field name="name">UBCI - Union Bancaire pour le Commerce et l'Industrie</field>
+        <field name="code">UBCI</field>
+    </record>
+    <record id="bank_attijari" model="tunisian.bank">
+        <field name="name">Attijari Bank</field>
+        <field name="code">ATTIJARI</field>
+    </record>
+    <record id="bank_amen" model="tunisian.bank">
+        <field name="name">Amen Bank</field>
+        <field name="code">AMEN</field>
+    </record>
+    <record id="bank_zitouna" model="tunisian.bank">
+        <field name="name">Banque Zitouna</field>
+        <field name="code">ZITOUNA</field>
+    </record>
+    <record id="bank_wifak" model="tunisian.bank">
+        <field name="name">Al Wifak Bank</field>
+        <field name="code">WIFAK</field>
+    </record>
+</odoo>

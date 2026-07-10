@@ -1,0 +1,26 @@
+<odoo>
+    <!-- Retenue à la source tree view -->
+    <record id="view_account_payment_retenue_tree" model="ir.ui.view">
+        <field name="name">account.payment.retenue.tree</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_tree"/>
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="type_de_retenue" optional="show"/>
+                <field name="montant_retenue" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Retenue search view -->
+    <record id="view_account_payment_retenue_search" model="ir.ui.view">
+        <field name="name">account.payment.retenue.search</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_search"/>
+        <field name="arch" type="xml">
+            <field name="journal_id" position="after">
+                <field name="type_de_retenue"/>
+            </field>
+        </field>
+    </record>
+</odoo>
