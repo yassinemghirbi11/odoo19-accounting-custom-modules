@@ -1,6 +1,7 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
+
 class AccountPayment(models.Model):
     _inherit = "account.payment"
 
@@ -20,8 +21,6 @@ class AccountPayment(models.Model):
         help="Select the bank for this payment",
     )
 
-    # Base domain: only taxes with retenue=True
-    # Onchange adds type_tax_use filter dynamically
     type_de_retenue = fields.Many2one(
         "account.tax",
         string="Type de retenue",
@@ -106,10 +105,8 @@ class AccountPayment(models.Model):
     def _onchange_payment_type_retenue_domain(self):
         self.type_de_retenue = False
         if self.payment_type == "inbound":
-            # Customer (Receive) → Sales taxes
             return {"domain": {"type_de_retenue": [("retenue", "=", True), ("type_tax_use", "=", "sale")]}}
         else:
-            # Vendor (Send) → Purchase taxes
             return {"domain": {"type_de_retenue": [("retenue", "=", True), ("type_tax_use", "=", "purchase")]}}
 
     @api.onchange("partner_type")
@@ -143,6 +140,12 @@ class AccountPayment(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        for vals in vals_list:
+            journal_id = vals.get('journal_id')
+            if journal_id:
+                journal = self.env['account.journal'].browse(journal_id)
+                if journal.is_retenue_journal and not vals.get('name'):
+                    vals['name'] = self.env['ir.sequence'].next_by_code('account.payment.retenue') or 'RET/NEW'
         payments = super().create(vals_list)
         payments._set_payment_method_for_retenue()
         return payments
@@ -151,6 +154,20 @@ class AccountPayment(models.Model):
         res = super().write(vals)
         if "journal_id" in vals or "payment_type" in vals:
             self._set_payment_method_for_retenue()
+        return res
+
+    def action_post(self):
+        retenue_names = {}
+        for pay in self:
+            if pay.is_retenue_journal and pay.name and pay.name.startswith('RET/'):
+                retenue_names[pay.id] = pay.name
+
+        res = super().action_post()
+
+        for pay in self:
+            if pay.id in retenue_names and pay.name != retenue_names[pay.id]:
+                pay.name = retenue_names[pay.id]
+
         return res
 
     @api.constrains("amount")

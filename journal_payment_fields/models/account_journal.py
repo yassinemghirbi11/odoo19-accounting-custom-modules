@@ -31,3 +31,9 @@ class AccountJournal(models.Model):
         string="Fournisseur",
         domain="[('supplier_rank', '>', 0), ('parent_id', '=', False)]",
     )
+
+    is_retenue_journal = fields.Boolean(      # <-- ADD THIS FIELD
+        string="Retenue Journal",
+        default=False,
+        help="If checked, payments in this journal will use RET/YYYY/XXXXX numbering",
+    )
