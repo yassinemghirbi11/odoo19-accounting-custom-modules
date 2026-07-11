@@ -14,6 +14,8 @@
                 <field name="amount" readonly="1"/>
                 <field name="cheque_numero" widget="char" placeholder="Chiffres uniquement"/>
                 <field name="cheque_date_echeance"/>
+                <field name="proprietaire" optional="show"/>
+                <field name="note" optional="hide"/>
             </list>
         </field>
     </record>
@@ -36,7 +38,11 @@
                         <group string="Informations cheque">
                             <field name="cheque_numero" placeholder="Chiffres uniquement"/>
                             <field name="cheque_date_echeance"/>
+                            <field name="proprietaire"/>
                         </group>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1" placeholder="Ajouter une note..."/>
                     </group>
                 </sheet>
             </form>
@@ -55,6 +61,7 @@
                 <field name="partner_id"/>
                 <field name="cheque_numero"/>
                 <field name="cheque_date_echeance"/>
+                <field name="proprietaire"/>
                 <filter name="filter_a_completer" string="A completer"
                         domain="['|', ('cheque_numero', '=', False), ('cheque_date_echeance', '=', False)]"/>
                 <filter name="filter_completes" string="Completes"

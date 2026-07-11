@@ -1,23 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tunisian Banks Menu under Configuration -->
     <record id="action_tunisian_bank" model="ir.actions.act_window">
         <field name="name">Banks</field>
         <field name="res_model">tunisian.bank</field>
         <field name="view_mode">list,form</field>
     </record>
-
-    <menuitem id="menu_tunisian_bank_root"
-        name="Banks"
-        parent="account.menu_finance_configuration"
-        sequence="35"/>
-
-    <menuitem id="menu_tunisian_bank"
-        name="Tunisian Banks"
-        parent="menu_tunisian_bank_root"
-        action="action_tunisian_bank"
-        sequence="10"/>
-
-    <!-- Hide ALL 3 occurrences of partner_bank_id (GLM fix) -->
+    <menuitem id="menu_tunisian_bank_root" name="Banks" parent="account.menu_finance_configuration" sequence="35"/>
+    <menuitem id="menu_tunisian_bank" name="Tunisian Banks" parent="menu_tunisian_bank_root" action="action_tunisian_bank" sequence="10"/>
     <record id="view_account_payment_form_hide_bank" model="ir.ui.view">
         <field name="name">account.payment.form.hide.bank</field>
         <field name="model">account.payment</field>
@@ -32,13 +21,11 @@
             <xpath expr="(//field[@name='partner_bank_id'])[3]" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <!-- Add Bank dropdown after journal -->
             <xpath expr="//field[@name='journal_id']" position="after">
-                <field name="bank_id" options="{'no_create': True}" string="Bank"/>
+                <field name="bank_id" options="{'no_create': True}" string="Bank" invisible="is_retenue_journal"/>
             </xpath>
         </field>
     </record>
-
     <record id="view_account_payment_form_custom_fields" model="ir.ui.view">
         <field name="name">account.payment.form.custom.fields</field>
         <field name="model">account.payment</field>
@@ -57,22 +44,15 @@
                             <field name="payment_type_custom" widget="radio" required="not is_retenue_journal"/>
                         </group>
                         <group string="Details">
-                            <field name="numero_cheque"
-                                invisible="payment_type_custom != 'cheque'"
-                                required="payment_type_custom == 'cheque'"/>
-                            <field name="numero_traite"
-                                invisible="payment_type_custom != 'traite'"
-                                required="payment_type_custom == 'traite'"/>
-                            <field name="date_echeance"
-                                invisible="payment_type_custom not in ('cheque', 'traite')"
-                                required="payment_type_custom in ('cheque', 'traite')"/>
+                            <field name="numero_cheque" invisible="payment_type_custom != 'cheque'" required="payment_type_custom == 'cheque'"/>
+                            <field name="numero_traite" invisible="payment_type_custom != 'traite'" required="payment_type_custom == 'traite'"/>
+                            <field name="date_echeance" invisible="payment_type_custom not in ('cheque', 'traite')" required="payment_type_custom in ('cheque', 'traite')"/>
                         </group>
                     </group>
                 </page>
             </notebook>
         </field>
     </record>
-
     <record id="view_account_payment_form_retenue_field" model="ir.ui.view">
         <field name="name">account.payment.form.retenue.field</field>
         <field name="model">account.payment</field>
@@ -81,7 +61,6 @@
             <xpath expr="//field[@name='payment_method_line_id']" position="after">
                 <field name="show_retenue" invisible="1"/>
                 <field name="is_retenue_journal" invisible="1"/>
-                <!-- type_de_retenue replaces deprecated pourcentage -->
                 <field name="type_de_retenue" options="{'no_create': True}" invisible="not is_retenue_journal" required="is_retenue_journal"/>
                 <field name="montant_retenue" invisible="not is_retenue_journal"/>
             </xpath>
