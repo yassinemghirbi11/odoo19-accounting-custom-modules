@@ -32,18 +32,47 @@ class PosPayment(models.Model):
             self._sync_cheque_to_account_payment()
         return res
 
+    def _find_matching_account_payment(self):
+        """Retrouve le account.payment correspondant a ce pos.payment.
+        account.payment n'a pas de lien direct vers un pos.payment precis
+        en Odoo 19 (pas de champ payment_ids sur account.move non plus) :
+        le lien fiable passe par pos_session_id + montant + methode de
+        paiement.
+        Retourne un recordset vide si 0 ou plusieurs candidats (ambigu),
+        par securite : on ne synchronise jamais au hasard.
+        """
+        self.ensure_one()
+        if not self.pos_order_id or not self.pos_order_id.session_id:
+            return self.env["account.payment"]
+
+        session = self.pos_order_id.session_id
+
+        AccountPayment = self.env["account.payment"]
+        same_session_payments = AccountPayment.search([
+            ("pos_session_id", "=", session.id),
+        ])
+        if not same_session_payments:
+            return AccountPayment
+
+        candidates = same_session_payments.filtered(
+            lambda ap: ap.pos_payment_method_id.id == self.payment_method_id.id
+            and abs(ap.amount - self.amount) < 0.005
+        )
+
+        if len(candidates) != 1:
+            return AccountPayment
+
+        return candidates
+
     def _sync_cheque_to_account_payment(self):
         """Push cheque_numero / cheque_date_echeance onto the linked
-        account.payment (via account_move_id -> account.move.payment_ids),
+        account.payment (retrouve via pos_session_id + montant + methode),
         so the fields added by journal_payment_fields (numero_cheque,
         date_echeance) are filled automatically, and the payment type
         is set to 'cheque' so the checkbox/radio reflects it too."""
         for pos_pay in self:
-            if not pos_pay.account_move_id:
-                continue
-            move = pos_pay.account_move_id
-            payments = move.payment_ids
-            if not payments:
+            account_payment = pos_pay._find_matching_account_payment()
+            if not account_payment:
                 continue
 
             update_vals = {}
@@ -54,6 +83,8 @@ class PosPayment(models.Model):
             if update_vals:
                 # Mark it as a cheque payment so the "Cheque" radio/checkbox
                 # is ticked and the conditional fields become visible/required.
-                if "payment_type_custom" in payments._fields:
+                if "payment_type_custom" in account_payment._fields:
                     update_vals["payment_type_custom"] = "cheque"
-                payments.write(update_vals)
+                # sudo() : ce write doit passer meme si le paiement est
+                # deja confirme (posted) et meme avec des droits limites.
+                account_payment.sudo().write(update_vals)
